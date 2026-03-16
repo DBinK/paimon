@@ -27,7 +27,7 @@ class ProbeWorker(QRunnable):
             r.color()
         )
 
-        self.callback(label, item)
+        self.callback(self.probe, label, item)  # 传递 probe 信息
 
 
 class DataSource(QObject):
@@ -37,8 +37,6 @@ class DataSource(QObject):
     def __init__(self):
 
         super().__init__()
-
-        self.data = {}
 
         self.config: dict = load_config()
         self.probes: list[dict] = self.config["probes"]
@@ -64,6 +62,13 @@ class DataSource(QObject):
 
         self.pending = len(self.probes)
 
+        # 一开始就构建好有序的字典
+        self.data = {}
+        for probe in self.probes:
+            label = probe.get("label", probe["name"])
+            # 可以设置一个默认的等待状态
+            self.data[label] = DataItem("...", "gray")
+
         for p in self.probes:
 
             worker = ProbeWorker(
@@ -73,12 +78,12 @@ class DataSource(QObject):
 
             self.pool.start(worker)
 
-    def _probe_done(self, label, item):
+    def _probe_done(self, probe, label, item):
 
+        # 直接更新对应键的值
         self.data[label] = item
 
         self.pending -= 1
 
         if self.pending == 0:
-
             self.data_updated.emit(self.data)
