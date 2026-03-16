@@ -1,30 +1,35 @@
-interval: 0.5
+interval: 1.0
 
 probes:
 
-  - name: baidu_ping
-    label: ZBaidu Ping
+  # 本地
+  - label: Local PING
     type: icmp
-    host: www.baidu.com
-  
-  - name: baidu_http
-    label: Baidu HTTP
-    type: http
-    url: https://www.baidu.com
+    host: 127.0.0.1
 
-  - name: google_tcp
-    label: Google TCP
+  # 局域网
+  - label: Gateway
+    type: icmp
+    host: 192.168.1.1
+
+  # 国内网站
+  - label: QQ PING
+    type: icmp
+    host: qq.com
+
+  # 国内 DNS
+  - label: Ali DNS
+    type: dns
+    domain: qq.com
+    dns: 223.5.5.5
+
+  # 国际网站
+  - label: GitHub TCP
     type: tcp
-    host: google.com
+    host: github.com
     port: 443
 
-  - name: google_http
-    label: Google HTTP
-    type: http
-    url: https://www.google.com
-
-  - name: google_dns
-    label: Google DNS
-    type: dns
-    domain: google.com
-    dns: 8.8.8.8
+  # 国际网站
+  - label: Google HTTP 
+    type: http     # TCP 不走代理, 一般都不通, 推荐用 http 测试
+    url: https://www.google.com/generate_204
