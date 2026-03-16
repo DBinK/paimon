@@ -1,4 +1,4 @@
-interval: 2
+interval: 0.5
 
 probes:
 
@@ -18,8 +18,8 @@ probes:
     type: http
     url: https://www.google.com
 
-  # - name: google_dns
-  #   label: Google DNS
-  #   type: dns
-  #   domain: google.com
-  #   dns: 8.8.8.8
+  - name: google_dns
+    label: Google DNS
+    type: dns
+    domain: google.com
+    dns: 8.8.8.8

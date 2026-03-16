@@ -47,6 +47,7 @@ class Panel(QWidget):
         QLabel {
             background: transparent;
             color: white;
+            font-family: "Cascadia Code", "Courier New", Courier, monospace;
         }
         """)
 
@@ -66,7 +67,7 @@ class Panel(QWidget):
         painter.drawRoundedRect(self.rect(), 4, 4)
 
     @Slot(dict)
-    def update_data(self, data):
+    def update_data(self, data: dict):
 
         for k, item in data.items():
 

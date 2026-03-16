@@ -69,7 +69,7 @@ def http_ping(url, timeout=3):
 
         with httpx.Client(timeout=timeout) as client:
 
-            r = client.head(url)
+            r = client.head(url, timeout=2)
 
         latency = (time.perf_counter() - start) * 1000
 
