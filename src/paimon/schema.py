@@ -23,7 +23,7 @@ class NetResult:
 
         return self.status
 
-    def color(self, threshold=(50, 100)):
+    def color(self, threshold=(50, 500)):
 
         if not self.ok:
             return "red"

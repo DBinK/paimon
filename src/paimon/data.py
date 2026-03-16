@@ -20,7 +20,7 @@ class ProbeWorker(QRunnable):
 
         r = run_probe(self.probe)
 
-        label = self.probe.get("label", self.probe["name"])
+        label = self.probe.get("label")
 
         item = DataItem(
             r.text(),
@@ -32,31 +32,28 @@ class ProbeWorker(QRunnable):
 
 class DataSource(QObject):
 
-    data_updated = Signal(dict)
+    data_updated = Signal(list, dict)  # (ordered_keys, data_dict) 同时传递顺序和数据
 
     def __init__(self):
-
         super().__init__()
 
         self.config: dict = load_config()
         self.probes: list[dict] = self.config["probes"]
      
         self.data = {}
-        for probe in self.probes:   # 一开始就构建好有序的字典
-            label = probe.get("label", probe["name"])
+        self.ordered_keys = []  # 显式保存顺序
+        for probe in self.probes:
+            label = probe.get("label")
+            self.ordered_keys.append(label)
             self.data[label] = DataItem("...", "gray") 
-        self.data_updated.emit(self.data)  # 推送默认的等待状态
+        
+        # 发送初始状态
+        self.data_updated.emit(self.ordered_keys, self.data)
 
         interval: int = self.config.get("interval", 1)
-
-        # 线程池
         self.pool = QThreadPool()
         self.pool.setMaxThreadCount(10)
-
-        # 任务计数
         self.pending = 0
-
-        # 定时更新
         self.timer = QTimer()
         self.timer.timeout.connect(self._update_data)
         self.timer.start(interval * 1000)
@@ -86,4 +83,4 @@ class DataSource(QObject):
 
         if self.pending == 0:
         
-            self.data_updated.emit(self.data)
+            self.data_updated.emit(self.ordered_keys, self.data)
