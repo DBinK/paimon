@@ -1,30 +1,61 @@
 # data.py
 
 import random
-from PySide6.QtCore import QTimer
+
+from PySide6.QtCore import QObject, Signal, QTimer
 
 
-class DataSource:
+from dataclasses import dataclass
+
+@dataclass
+class DataItem:
+    text: str
+    color: str = "white"
+
+    def __str__(self):
+        return self.text
+
+
+class DataSource(QObject):
+
+    # 数据更新信号
+    data_updated = Signal(dict)
+
     def __init__(self):
-        
-        # 数据字典
-        self.data = {}
+
+        super().__init__()
+
+        self.data = {
+            "server1": DataItem("10 ms"),
+            "server2": DataItem("20 ms"),
+            "server3": DataItem("30 ms"),
+            "uptime": DataItem("1d 1h 1m 1s")
+        }
 
         # 定时更新
         self.timer = QTimer()
-        self.timer.timeout.connect(self.update_data)
+
+        self.timer.timeout.connect(self._update_data)
+
         self.timer.start(1000)
 
-    def update_data(self):
-        """
-        模拟外部数据更新
-        """
-        self.data["server1"] = f"{random.randint(10,100)} ms"
-        self.data["cpu"] = f"{random.randint(0,100)} %"
+    def _update_data(self):
 
-    def get_data(self):
-        """
-        返回数据
-        """
+        ping = random.randint(10,100)
 
-        return self.data
+        if ping < 40:
+            color = "green"
+        elif ping < 70:
+            color = "orange"
+        else:
+            color = "red"
+
+        self.data["server1"] = DataItem(f"{ping} ms", color)
+
+        cpu = random.randint(0,100)
+
+        cpu_color = "green" if cpu < 70 else "red"
+
+        self.data["cpu"] = DataItem(f"{cpu} %", cpu_color)
+
+        self.data_updated.emit(self.data)
