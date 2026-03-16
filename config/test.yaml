@@ -1,0 +1,25 @@
+interval: 2
+
+probes:
+
+  - name: baidu_ping
+    label: Baidu Ping
+    type: icmp
+    host: www.baidu.com
+
+  - name: google_tcp
+    label: Google TCP
+    type: tcp
+    host: google.com
+    port: 443
+
+  - name: google_http
+    label: Google HTTP
+    type: http
+    url: https://www.google.com
+
+  # - name: google_dns
+  #   label: Google DNS
+  #   type: dns
+  #   domain: google.com
+  #   dns: 8.8.8.8

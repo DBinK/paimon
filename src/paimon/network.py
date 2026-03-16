@@ -118,6 +118,23 @@ def dns_ping(domain, dns_server="8.8.8.8"):
 
         return NetResult(False, None, "error")
 
+def run_probe(cfg: dict):
+
+    t = cfg["type"]
+
+    if t == "icmp":
+        return icmp_ping(cfg["host"])
+
+    if t == "tcp":
+        return tcp_ping(cfg["host"], cfg.get("port", 80))
+
+    if t == "http":
+        return http_ping(cfg["url"])
+
+    if t == "dns":
+        return dns_ping(cfg["domain"], cfg.get("dns", "8.8.8.8"))
+
+    raise ValueError(f"unknown probe type: {t}")
 
 if __name__ == "__main__":
 

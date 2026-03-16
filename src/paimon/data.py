@@ -1,51 +1,43 @@
 # data.py
 
-import random
-
 from PySide6.QtCore import QObject, Signal, QTimer
 
 from paimon.schema import DataItem
 
+from paimon.config import load_config
+from paimon.network import run_probe
 
 class DataSource(QObject):
-    # 数据更新信号
-    data_updated = Signal(dict)
+  
+    data_updated = Signal(dict)  # 数据更新信号
 
     def __init__(self):
 
         super().__init__()
 
-        self.data = {
-            "server1": DataItem("10 ms"),
-            "server2": DataItem("20 ms"),
-            "server3": DataItem("30 ms"),
-            "uptime": DataItem("1d 1h 1m 1s")
-        }
+        self.data = {}
+
+        self.config: dict = load_config()
+        self.probes: list[dict] = self.config["probes"]
+        interval: int = self.config.get("interval", 2)
 
         # 定时更新
         self.timer = QTimer()
-
         self.timer.timeout.connect(self._update_data)
-
-        self.timer.start(1000)
+        self.timer.start(interval * 1000)
 
     def _update_data(self):
 
-        ping = random.randint(10,100)
+        for p in self.probes:
 
-        if ping < 40:
-            color = "green"
-        elif ping < 70:
-            color = "orange"
-        else:
-            color = "red"
+            r = run_probe(p)
 
-        self.data["server1"] = DataItem(f"{ping} ms", color)
+            label = p.get("label", p["name"])
 
-        cpu = random.randint(0,100)
-
-        cpu_color = "green" if cpu < 70 else "red"
-
-        self.data["cpu"] = DataItem(f"{cpu} %", cpu_color)
+            item = DataItem(
+                r.text(),
+                r.color()
+            )
+            self.data[label] = item
 
         self.data_updated.emit(self.data)
