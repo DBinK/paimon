@@ -4,20 +4,10 @@ import random
 
 from PySide6.QtCore import QObject, Signal, QTimer
 
-
-from dataclasses import dataclass
-
-@dataclass
-class DataItem:
-    text: str
-    color: str = "white"
-
-    def __str__(self):
-        return self.text
+from paimon.schema import DataItem
 
 
 class DataSource(QObject):
-
     # 数据更新信号
     data_updated = Signal(dict)
 

@@ -8,9 +8,11 @@ authors = [
 ]
 requires-python = ">=3.10"
 dependencies = [
+    "httpx>=0.28.1",
     "ping3>=5.1.5",
     "pyside6>=6.10.2",
     "rich>=14.3.3",
+    "tcping>=0.1.1rc1",
 ]
 
 [project.scripts]
