@@ -12,6 +12,9 @@ P A I M O N - Paimon Assists In Monitoring Overlay Network
 * 使用 **uv** 管理环境
 
 
+<img width="1345" height="1113" alt="图片" src="https://github.com/user-attachments/assets/c197e005-9753-49e7-b0c1-3611059c6657" />
+
+
 ---
 
 # 快速开始
