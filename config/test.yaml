@@ -33,3 +33,10 @@ probes:
   - label: Google HTTP 
     type: http     # TCP 不走代理, 一般都不通, 推荐用 http 测试
     url: https://www.google.com/generate_204
+
+  # 国际 DNS
+  - label: Google DNS
+    type: dns
+    domain: github.com
+    dns: 8.8.8.8
+
