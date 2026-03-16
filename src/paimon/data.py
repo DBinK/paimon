@@ -40,6 +40,12 @@ class DataSource(QObject):
 
         self.config: dict = load_config()
         self.probes: list[dict] = self.config["probes"]
+     
+        self.data = {}
+        for probe in self.probes:   # 一开始就构建好有序的字典
+            label = probe.get("label", probe["name"])
+            self.data[label] = DataItem("...", "gray") 
+        self.data_updated.emit(self.data)  # 推送默认的等待状态
 
         interval: int = self.config.get("interval", 1)
 
@@ -62,13 +68,6 @@ class DataSource(QObject):
 
         self.pending = len(self.probes)
 
-        # 一开始就构建好有序的字典
-        self.data = {}
-        for probe in self.probes:
-            label = probe.get("label", probe["name"])
-            # 可以设置一个默认的等待状态
-            self.data[label] = DataItem("...", "gray")
-
         for p in self.probes:
 
             worker = ProbeWorker(
@@ -86,4 +85,5 @@ class DataSource(QObject):
         self.pending -= 1
 
         if self.pending == 0:
+        
             self.data_updated.emit(self.data)

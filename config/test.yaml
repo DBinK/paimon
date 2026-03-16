@@ -3,9 +3,14 @@ interval: 0.5
 probes:
 
   - name: baidu_ping
-    label: Baidu Ping
+    label: ZBaidu Ping
     type: icmp
     host: www.baidu.com
+  
+  - name: baidu_http
+    label: Baidu HTTP
+    type: http
+    url: https://www.baidu.com
 
   - name: google_tcp
     label: Google TCP
